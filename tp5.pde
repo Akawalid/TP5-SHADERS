@@ -14,15 +14,16 @@ void draw() {
   
   p = createShape();
   //Ici j'utilise le mode TRIANGLE_STRIP car c'est le meuilleur mode pour faire l'interpolation de couleur, quand j'ai utilisé le mode QUAD, j'au essayé d'afficher les lignes
-  //noires(foncées) mais glsl les affiches d'une manière bizzare car les QUAD suivent l'incilison du ressort et les lignes noires tournent dans le sens inverse, donc pour rendre
-  //le gradient de couleurs agréable il faut orienter les vertex dans le meme sens que les lignes noires et le mode TRIANGLE_STRIP fait ça parfaiment
+  //noires(foncées) mais glsl les affiches d'une manière étrange car les QUAD suivent l'incilison du ressort mais les lignes noires tournent dans le sens inverse on n'a pas assez
+  //de points pour faire le gradient dans le sens inverse donc il faut changer l'alignement de ces vertex, donc il s'agit de les orienter dans le meme sens que les lignes noires et 
+  //le mode TRIANGLE_STRIP fait ça parfaiment.
   p.beginShape(TRIANGLE_STRIP);
   float Rext = 150;
   float Rint = 50;
   float dA   = PI/32;
   float re   = 1.0;
   p.noStroke();
-  //j'ai crée une autre varibale dans le VertexShader pour ajouter animer la couleur.
+  //j'ai crée une autre varibale dans le VertexShader pour ajouter des animations de couleur.
   myShader.set("frame_count", float(frameCount));
   for (float a=-8*PI; a<8*PI; a+=dA) {
     for (float b=0; b<2*PI; b+=dA) {
@@ -60,7 +61,7 @@ void draw() {
       p.normal(n0.x, n0.y, n0.z);
       p.vertex(p3.x, p3.y, p3.z, a+dA, 16 * (b+dA));   */
       
-      //dan,s le mode TIANGLE_STRIP on n'a besoin d'afficher que P1 et P0 et dans la prochaine itération on affiche p2 et p3 comme p0 et p1:
+      //dan,s le mode TIANGLE_STRIP on n'a besoin d'afficher que P1 et P0 et dans l'itération suivante on affiche les nouveaux p0 et p1 comme p2 et p3:
       /*
       itération 0 
         P1         P0
@@ -80,6 +81,7 @@ void draw() {
                   \ |
                    \|
       -> .          \.
+  new P1 == P3    new P0==P2
       */
       
       //le centre est P13 et le point pour ce qu'on veut calculer la normale est p1
